@@ -222,7 +222,7 @@ void updateAccount(struct account accounts[], int n) {
      
         if (checkPhone(accounts, n, newphone)) {
             printf("SDT da ton tai o tai khoan khac. Vui long nhap SDT khac.\n");
-            continue; // yêu c?u nh?p l?i
+            continue; 
         }       
         break;
     }
