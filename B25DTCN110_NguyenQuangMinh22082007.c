@@ -27,7 +27,7 @@ int main() {
     int n = 0;
     int chon;
 
-   while (1) {
+while (1) {
     printf("\n=====================================================\n");
     printf("                 QUAN LY TAI KHOAN NGAN HANG\n");
     printf("=====================================================\n");
@@ -44,18 +44,40 @@ int main() {
     scanf("%d", &chon);
     getchar();
 
-
-        if (chon == 1) n = addAccount(accounts, n);
-        else if (chon == 2) updateAccount(accounts, n);
-        else if (chon == 3) deleteandlock(accounts, n);
-        else if (chon == 4) search(accounts, n);
-        else if (chon == 5) showPagination(accounts, n);
-        else if (chon == 6) sortAccounts(accounts, n);
-        else if (chon == 0) {
-            printf("Thoat chuong trinh\n");
+    switch (chon) {
+        case 1:
+            n = addAccount(accounts, n);
             break;
-        } else printf("Lua chon khong hop le!\n");
+
+        case 2:
+            updateAccount(accounts, n);
+            break;
+
+        case 3:
+            deleteandlock(accounts, n);
+            break;
+
+        case 4:
+            search(accounts, n);
+            break;
+
+        case 5:
+            showPagination(accounts, n);
+            break;
+
+        case 6:
+            sortAccounts(accounts, n);
+            break;
+
+        case 0:
+            printf("Thoat chuong trinh\n");
+            return 0;
+
+        default:
+            printf("Lua chon khong hop le!\n");
+            break;
     }
+}
     return 0;
 }
 
@@ -229,29 +251,43 @@ void deleteandlock(struct account accounts[], int n) {
 void search(struct account accounts[], int n) {
     char key[50], lowKey[50], lowName[50], lowId[50];
 
-    printf("\nNhap tu khoa tim kiem: ");
-    fgets(key, sizeof(key), stdin);
-    key[strcspn(key, "\n")] = 0;
-    toLowerCopy(key, lowKey, sizeof(lowKey));
+    if (n == 0) {
+        printf("Danh sach rong!\n");
+        return;
+    }
+    while (1) {
+        printf("\nNhap tu khoa tim kiem (nhap 0 de thoat): ");
+        fgets(key, sizeof(key), stdin);
+        key[strcspn(key, "\n")] = 0;
 
-    int found = 0;
-    printf("\n===== KET QUA TIM KIEM =====\n");
+        if (strcmp(key, "0") == 0) {
+         
+            break;
+        }
+        toLowerCopy(key, lowKey, sizeof(lowKey));
+        int found = 0;
 
-    for (int i = 0; i < n; i++) {
-        toLowerCopy(accounts[i].fullname, lowName, sizeof(lowName));
-        toLowerCopy(accounts[i].accountid, lowId, sizeof(lowId));
+        printf("\n===== KET QUA TIM KIEM =====\n");
 
-        if (strstr(lowName, lowKey) || strstr(lowId, lowKey)) {
-            printf("\nID: %s\n", accounts[i].accountid);
-            printf("Ten: %s\n", accounts[i].fullname);
-            printf("SDT: %s\n", accounts[i].phone);
-            printf("Trang thai: %s\n", accounts[i].status == 1 ? "Hoat dong" : "Da khoa");
-            found = 1;
+        for (int i = 0; i < n; i++) {
+            toLowerCopy(accounts[i].fullname, lowName, sizeof(lowName));
+            toLowerCopy(accounts[i].accountid, lowId, sizeof(lowId));
+            if (strstr(lowName, lowKey) || strstr(lowId, lowKey)) {
+                printf("\nID: %s\n", accounts[i].accountid);
+                printf("Ten: %s\n", accounts[i].fullname);
+                printf("SDT: %s\n", accounts[i].phone);
+                printf("Trang thai: %s\n", accounts[i].status == 1 ? "Hoat dong" : "Da khoa");
+                found = 1;
+            }
+        }
+        if (found) break;      
+        else {
+            printf("Khong tim thay. Nhp lai...\n");
+          
         }
     }
-
-    if (!found) printf("Khong tim thay ket qua!\n");
 }
+
 
 void showPagination(struct account accounts[], int n) {
     if (n == 0) {
