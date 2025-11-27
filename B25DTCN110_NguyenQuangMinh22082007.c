@@ -21,10 +21,21 @@ void search(struct account accounts[], int n);
 void showPagination(struct account accounts[], int n);
 void sortAccounts(struct account accounts[], int n);
 void toLowerCopy(char src[], char dest[], int size);
-
+void  transferMoney(struct account accounts[], int n);
 int main() {
-    struct account accounts[maxaccounts];
-    int n = 0;
+    struct account accounts[maxaccounts] = { 
+    {"ACC001", "Nguyen Van A", "0901234567", 1500000.0, 1},
+    {"ACC002", "Tran Thi B", "0912345678", 2500000.0, 1},
+    {"ACC003", "Le Van C", "0923456789", 500000.0, 0},
+    {"ACC004", "Pham Thi D", "0934567890", 12000000.0, 1},
+    {"ACC005", "Hoang Van E", "0945678901", 750000.0, 1},
+    {"ACC006", "Do Thi F", "0956789012", 980000.0, 0},
+    {"ACC007", "Bui Van G", "0967890123", 3400000.0, 1},
+    {"ACC008", "Pham Van H", "0978901234", 21000000.0, 1},
+    {"ACC009", "Ngo Thi I", "0989012345", 605000.0, 1},
+    {"ACC010", "Vu Van K", "0990123456", 450000.0, 0}
+	};
+    int n = 10;
     int chon;
 
     while (1) {
@@ -37,6 +48,7 @@ int main() {
         printf("   [4]  Tim kiem tai khoan (ID / Ten)\n");
         printf("   [5]  Hien thi danh sach tai khoan\n");
         printf("   [6]  Sap xep tai khoan\n");
+        printf("   [7]  Giao dich \n");
         printf("-----------------------------------------------------\n");
         printf("   [0]  Thoat chuong trinh\n");
         printf("=====================================================\n");
@@ -68,7 +80,9 @@ int main() {
             case 6:
                 sortAccounts(accounts, n);
                 break;
-
+            case 7:
+			    transferMoney(accounts, n);
+				break;  
             case 0:
                 printf("Thoat chuong trinh\n");
                 return 0;
@@ -385,4 +399,114 @@ void sortAccounts(struct account accounts[], int n) {
         printf("Lua chon khong hop le!\n");
     }
 }
+void transferMoney(struct account accounts[], int n) {
+    if (n == 0) {
+        printf("Danh sach rong!\n");
+        return;
+    }
 
+    char senderId[20];
+    char receiverId[20];
+    double amount = 0.0;
+    int senderIdx = -1, receiverIdx = -1;
+
+
+    while (1) {
+        printf("Nhap ID nguoi gui: ");
+        fgets(senderId, sizeof(senderId), stdin);
+        senderId[strcspn(senderId, "\n")] = 0;
+
+        if (strlen(senderId) == 0) {
+            printf("Vui long nhap ID nguoi gui !!!\n");
+            continue;
+        }
+
+        senderIdx = -1;
+        for (int i = 0; i < n; i++) {
+            if (strcmp(senderId, accounts[i].accountid) == 0) {
+                senderIdx = i;
+                break;
+            }
+        }
+
+        if (senderIdx == -1) {
+            printf("Khong tim thay tai khoan nguoi gui !!\n");
+            continue;
+        }
+
+        if (accounts[senderIdx].status == 0) {
+            printf("Tai khoan nguoi gui dang bi khoa !!\n");
+            return;
+        }
+
+        break;
+    }
+
+  
+    while (1) {
+        printf("Nhap ID nguoi nhan: ");
+        fgets(receiverId, sizeof(receiverId), stdin);
+        receiverId[strcspn(receiverId, "\n")] = 0;
+
+        if (strlen(receiverId) == 0) {
+            printf("Vui long nhap ID nguoi nhan !!!\n");
+            continue;
+        }
+
+        receiverIdx = -1;
+        for (int i = 0; i < n; i++) {
+            if (strcmp(receiverId, accounts[i].accountid) == 0) {
+                receiverIdx = i;
+                break;
+            }
+        }
+
+        if (receiverIdx == -1) {
+            printf("Khong tim thay tai khoan nguoi nhan !!\n");
+            continue;
+        }
+
+        if (accounts[receiverIdx].status == 0) {
+            printf("Tai khoan nguoi nhan dang bi khoa !!\n");
+            return;
+        }
+
+        if (strcmp(receiverId, senderId) == 0) {
+            printf("ID nguoi nhan trung voi ID nguoi gui - Vui long nhap lai !!\n");
+            continue;
+        }
+
+        break;
+    }
+
+    
+    while (1) {
+        printf("Nhap so tien (so du hien tai: %.2f): ", accounts[senderIdx].balance);
+        if (scanf("%lf", &amount) != 1) {
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF) {}
+            printf("So tien khong hop le! Nhap lai.\n");
+            continue;
+        }
+        getchar();
+
+        if (amount <= 0) {
+            printf("So tien phai lon hon 0 - Vui long nhap lai !!\n");
+            continue;
+        }
+
+        if ((float)amount > accounts[senderIdx].balance) {
+            printf("So du khong du !!\n");
+            continue;
+        }
+        break;
+    }
+
+    
+    accounts[senderIdx].balance -= (float)amount;
+    accounts[receiverIdx].balance += (float)amount;
+
+    printf("Chuyen khoan thanh cong !!\n");
+    printf("Nguoi gui (%s) - so du moi: %.2f\n", accounts[senderIdx].accountid, accounts[senderIdx].balance);
+    printf("Nguoi nhan (%s) - so du moi: %.2f\n", accounts[receiverIdx].accountid, accounts[receiverIdx].balance);
+}
