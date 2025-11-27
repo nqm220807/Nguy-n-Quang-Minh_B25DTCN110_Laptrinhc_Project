@@ -75,10 +75,9 @@ while (1) {
 
         default:
             printf("Lua chon khong hop le!\n");
-            break;
+            return 0;
     }
 }
-    return 0;
 }
 
 void toLowerCopy(char src[], char dest[], int size) {
