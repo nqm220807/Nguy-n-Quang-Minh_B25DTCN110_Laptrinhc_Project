@@ -21,7 +21,7 @@ void search(struct account accounts[], int n);
 void showPagination(struct account accounts[], int n);
 void sortAccounts(struct account accounts[], int n);
 void toLowerCopy(char src[], char dest[], int size);
-void  transferMoney(struct account accounts[], int n);
+void transferMoney(struct account accounts[], int n);
 int main() {
     struct account accounts[maxaccounts] = { 
     {"ACC001", "Nguyen Van A", "0901234567", 1500000.0, 1},
@@ -186,15 +186,27 @@ void updateAccount(struct account accounts[], int n) {
     int pos = -1;
 
     while (1) {
-        printf("\nNhap ID tai khoan can cap nhat: ");
-        scanf("%s", id);
-        getchar();
-        pos = -1;
-        for (int i = 0; i < n; i++)
-            if (strcmp(accounts[i].accountid, id) == 0)
-                pos = i;
-        if (pos != -1) break;
-        printf("ID khong ton tai! Nhap lai.\n");
+    printf("Nhap ID tai khoan can cap nhat: ");
+
+    fgets(id, sizeof(id), stdin);
+    id[strcspn(id, "\n")] = 0; 
+
+    if (strlen(id) == 0) {
+        printf("ID khong duoc de trong! Nhap lai.");
+        continue;
+    }
+
+    pos = -1;
+    for (int i = 0; i < n; i++) {
+        if (strcmp(accounts[i].accountid, id) == 0) {
+            pos = i;
+            break;
+        }
+    }
+
+    if (pos != -1) break;
+
+    printf("ID khong ton tai! Nhap lai.\n");
     }
 
 
